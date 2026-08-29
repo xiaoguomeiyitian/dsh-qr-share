@@ -1,0 +1,63 @@
+name: Bug report
+description: Something is not working as documented.
+title: "[bug] "
+labels: ["kind/bug"]
+body:
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Where the bug appears
+      description: Which half of the plugin misbehaved?
+      options:
+        - Host half (the `/_qr/share` route, route gating, token mint)
+        - Client half (the sidebar footer button, QR dialog rendering)
+        - Both
+        - Not sure
+    validations:
+      required: true
+  - type: input
+    id: dsh_version
+    attributes:
+      label: DSH version
+      description: Output of `dsh --version` or `pnpm dsh --version` in the failing environment.
+      placeholder: "0.1.1-rc.2"
+    validations:
+      required: true
+  - type: input
+    id: plugin_version
+    attributes:
+      label: Plugin version
+      description: The `dsh-qr-share` version you are running.
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: install_method
+    attributes:
+      label: Install method
+      description: How was the plugin installed?
+      placeholder: "dsh plugin --profile web add dsh-qr-share@0.1.0"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: What did you do? What did you expect? What happened instead?
+      placeholder: |
+        1. Install ...
+        2. Open the sidebar footer ...
+        3. See error
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs / output
+      description: Paste `docker logs` / browser console / `curl -i http://127.0.0.1:3080/_qr/share` output here.
+      render: shell
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Anything else (browser, OS, reverse proxy in front, custom `--trusted-host`, etc.)

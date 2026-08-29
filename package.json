@@ -73,7 +73,11 @@
     "lib/types/**/*.d.ts",
     "src",
     "cordis.patch.yml",
+    "dsh.plugin.json",
     "README.md",
+    "README.zh.md",
+    "CHANGELOG.md",
+    "THIRD_PARTY_NOTICES.md",
     "LICENSE"
   ],
   "scripts": {
@@ -85,6 +89,20 @@
     "pack:tarball": "pnpm build && pnpm pack"
   },
   "license": "MIT",
+  "author": {
+    "name": "xiaoguomeiyitian",
+    "url": "https://github.com/xiaoguomeiyitian"
+  },
+  "contributors": [
+    {
+      "name": "xiaoguomeiyitian",
+      "url": "https://github.com/xiaoguomeiyitian"
+    }
+  ],
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/xiaoguomeiyitian"
+  },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0"

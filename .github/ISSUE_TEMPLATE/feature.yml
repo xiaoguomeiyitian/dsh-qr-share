@@ -1,0 +1,41 @@
+name: Feature request
+description: Suggest a new behavior, a setting, or a new slot.
+title: "[feature] "
+labels: ["kind/feature"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Host half (new HTTP route / new patch config / new gating option)
+        - Client half (new button affordance / new dialog UX / new locale)
+        - Manifest / packaging (new `dsh.plugin.json` field, npm registry action)
+        - Documentation (README / CHANGELOG / design doc)
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What is the current limitation, and what user pain does it cause?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: How should the plugin behave? Sketch the API / UI / config shape.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What else did you consider, and why is this proposal preferred?
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: DSH version, related issues, mockups, prior art, anything relevant.

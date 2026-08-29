@@ -1,0 +1,19 @@
+# Linguist overrides
+# See https://docs.github.com/en/repositories/working-with-files/managing-files/customizing-how-changed-files-appear-on-github
+
+# Force linguist to detect these as TypeScript (avoids mis-detection via JSX)
+*.tsx linguist-detectable=true
+*.ts linguist-detectable=true
+
+# Docs / config — do not count toward language stats
+*.md linguist-documentation=true
+docs/* linguist-documentation=true
+CHANGELOG.md linguist-documentation=true
+
+# Disable vendored / generated content
+node_modules/* linguist-vendored
+pnpm-lock.yaml linguist-generated
+*.tgz linguist-vendored
+
+# Normalize line endings for cross-platform contributors
+* text=auto eol=lf

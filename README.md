@@ -1,8 +1,24 @@
 # dsh-qr-share
 
-DSH web plugin: a sidebar-footer QR-code button that lets a phone scan
-and re-issue the current browser's authenticated launch URL, reusing the
-same `?token=…` exchange the desktop just completed.
+English | [中文](README.zh.md)
+
+> DSH web plugin: a sidebar-footer QR-code button that lets a phone scan
+> and re-issue the current browser's authenticated launch URL, reusing the
+> same `?token=…` exchange the desktop just completed.
+
+[![license](https://img.shields.io/github/license/xiaoguomeiyitian/dsh-qr-share)](LICENSE)
+[![version](https://img.shields.io/github/v/release/xiaoguomeiyitian/dsh-qr-share)](https://github.com/xiaoguomeiyitian/dsh-qr-share/releases)
+[![stars](https://img.shields.io/github/stars/xiaoguomeiyitian/dsh-qr-share?style=social)](https://github.com/xiaoguomeiyitian/dsh-qr-share/stargazers)
+[![dsh.so](https://www.dsh.so/badge/dsh-qr-share.svg)](https://www.dsh.so/artifact/dsh-qr-share)
+![dsh](https://img.shields.io/badge/DSH-0.1.0--rc.8%20%7C%200.1.2--alpha.1-8257D0)
+
+## Screenshots
+
+> Placeholder — add a screenshot of the sidebar footer button + dialog to
+> `docs/screenshot.png` and uncomment the line below. Recommended size:
+> 640×400, capturing the bottom of the sidebar and the QR dialog.
+
+<!-- ![QR button + dialog](docs/screenshot.png) -->
 
 ## What it does
 
@@ -118,3 +134,13 @@ the step-by-step `npm publish` flow.
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+## Acknowledgements
+
+- [`dsh-better-sidebar`](https://github.com/omdsh-dev/DSH-better-sidebar) — the
+  slot injection and dual client bundle (official / plugin-registry) pattern
+  is inspired by its `tsdown.config.ts`.
+- [`qrcode`](https://www.npmjs.com/package/qrcode) — the QR code renderer.
+- DSH community — for the `dsh.community` plugin manifest spec
+  (`0.15`) and the verification / discovery surface at
+  [dsh.so](https://www.dsh.so).
