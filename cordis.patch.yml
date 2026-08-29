@@ -1,0 +1,22 @@
+# dsh-qr-share bundle patch.
+#
+# When the plugin is installed through the official CLI:
+#
+#   dsh plugin --profile <name> add dsh-qr-share@<version>
+#
+# — this declaration makes the profile reconcile `dsh.profile.bundles`
+# against installed packages and append `dsh-qr-share` to the bundle
+# stack automatically. The profile boot then merges THIS patch (a single
+# `insert` of the plugin row) exactly like a manual cordis.patch.yml
+# mount line.
+#
+# `name` MUST be the package specifier, not a file path: dsh-client-
+# modules resolves `<name>/package.json` from the profile dir to
+# discover the client half and compose window.__DSH_BOOT__.
+#
+# To disable the plugin without uninstalling, swap this row's `name`
+# to a `!!js` expression returning a disabled placeholder (see
+# dsh-better-sidebar's cordis.patch.yml for the pattern).
+- insert:
+    - id: qr-share
+      name: 'dsh-qr-share'

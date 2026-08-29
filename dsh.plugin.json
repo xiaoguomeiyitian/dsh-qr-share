@@ -1,0 +1,16 @@
+{
+  "id": "dsh-external/dsh-qr-share",
+  "version": "0.1.0",
+  "main": "./lib/index.js",
+  "description": "Sidebar footer QR-code button: lets a phone scan and re-issue the current browser's authenticated launch URL, reusing the same ?token exchange the desktop just completed.",
+  "engines": {
+    "dsh": ">=0.0.1"
+  },
+  "contributes": {
+    "tools": [],
+    "skills": []
+  },
+  "client": {
+    "main": "./lib/client-registry.js"
+  }
+}

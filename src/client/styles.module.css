@@ -1,0 +1,158 @@
+/**
+ * dsh-qr-share styles. Two pieces:
+ *
+ *  1. The sidebar footer action button — same row layout as the official
+ *     Settings trigger (`sidebar.settings` occupant). The shell handles
+ *     wide vs rail sizing; we only style the inner button + icon.
+ *
+ *  2. The dialog — a centered overlay with backdrop, mimicking the visual
+ *     tone of the existing Settings panel without depending on its CSS
+ *     variables (plugins can't reach the shell's CSS module surface).
+ *
+ * Colors are kept neutral so the plugin inherits whichever theme the
+ * user has active (light/dark) via `color-scheme` + native inheritance.
+ */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.button:hover {
+  background: color-mix(in srgb, currentColor 8%, transparent);
+}
+
+.button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -2px;
+}
+
+.buttonLabel {
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: color-mix(in srgb, black 45%, transparent);
+  display: grid;
+  place-items: center;
+  z-index: 9999;
+  animation: dsh-qr-share-fade-in 120ms ease-out;
+}
+
+.dialog {
+  background: var(--dsh-qr-share-dialog-bg, #ffffff);
+  color: var(--dsh-qr-share-dialog-fg, #111111);
+  border-radius: 12px;
+  padding: 24px;
+  min-width: 320px;
+  max-width: 420px;
+  box-shadow: 0 12px 32px color-mix(in srgb, black 25%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  animation: dsh-qr-share-pop-in 160ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+
+@media (prefers-color-scheme: dark) {
+  .dialog {
+    background: var(--dsh-qr-share-dialog-bg, #1c1c1f);
+    color: var(--dsh-qr-share-dialog-fg, #f0f0f0);
+  }
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.canvas {
+  display: block;
+  image-rendering: pixelated;
+  border-radius: 8px;
+}
+
+.err {
+  color: #d23f3f;
+  font-size: 13px;
+  margin: 0;
+}
+
+.urlBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  align-items: center;
+}
+
+.urlLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.6;
+}
+
+.url {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  word-break: break-all;
+  background: color-mix(in srgb, currentColor 6%, transparent);
+  padding: 6px 8px;
+  border-radius: 4px;
+  max-width: 100%;
+  text-align: center;
+}
+
+.hint {
+  font-size: 12px;
+  opacity: 0.7;
+  text-align: center;
+  margin: 0;
+}
+
+.close {
+  margin-top: 4px;
+  padding: 8px 16px;
+  border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.close:hover {
+  background: color-mix(in srgb, currentColor 8%, transparent);
+}
+
+.close:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -2px;
+}
+
+@keyframes dsh-qr-share-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes dsh-qr-share-pop-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
