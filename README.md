@@ -31,13 +31,33 @@ in `web-external.patch.yml` still gates the route via the trust fence.
 - `SameSite=Strict` + same-origin `fetch` mean the route is unreachable
   from any cross-site frame.
 
-## Install (via CLI)
+## Install
+
+### Via the DSH plugin CLI (recommended for production)
 
 ```bash
 dsh plugin --profile <name> add dsh-qr-share@latest
 ```
 
-## Install (manual, e.g. inside the docker-build image)
+This adds the bundle declaration to your profile and reuses the
+`cordis.patch.yml` shipped in the package — no manual patch overlay
+edits needed.
+
+### Via plain `npm install`
+
+```bash
+# in a project that owns a DSH profile directory
+npm install dsh-qr-share
+# or with pnpm
+pnpm add dsh-qr-share
+```
+
+Then add the row from `cordis.patch.yml` (shipped with the package) to
+your profile's patch overlay, and ensure the package is reachable from
+the profile's `node_modules` (pnpm/npm flat layout works; pnpm strict
+layout needs a symlink — see `manual` install below).
+
+### Manual install (e.g. inside the docker-build image)
 
 1. Place the package at `/app/dsh-qr-share/`.
 2. Symlink it into `$DSH_HOME/profiles/node_modules/dsh-qr-share` (the
@@ -66,6 +86,7 @@ dsh plugin --profile <name> add dsh-qr-share@latest
 pnpm install
 pnpm build       # tsc declarations + tsdown bundles
 pnpm typecheck   # strict check
+pnpm pack        # produce dsh-qr-share-<version>.tgz (used by the install commands above)
 ```
 
 Outputs:
@@ -75,3 +96,25 @@ Outputs:
 - `lib/client.js` — official profile channel bundle (id `dsh-qr-share`)
 - `lib/client-registry.js` — plugin-registry channel bundle (id `dsh-external/dsh-qr-share`)
 - `lib/types/**` — TypeScript declarations
+
+## Compatibility
+
+- Node `>=20`
+- DSH (DeepSeek Harness) core `>=0.1.0-rc.8` (tested against
+  `0.1.1-rc.2` and `0.1.2-alpha.1`)
+- React `^18 || ^19` (peer, optional — the host half doesn't need React)
+
+The host half uses `@deepseek-ai/cordis` **types only** (declaration
+merging + `Context` re-export); the runtime cordis instance is supplied
+by the DSH core at plugin mount time. This is why the peer dependency
+on `@deepseek-ai/cordis` is intentionally absent — it would be rejected
+by the DSH market manifest gate, and is not required at runtime.
+
+## Publishing
+
+For maintainers — see [RELEASE-CHECKLIST.md](RELEASE-CHECKLIST.md) for
+the step-by-step `npm publish` flow.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
