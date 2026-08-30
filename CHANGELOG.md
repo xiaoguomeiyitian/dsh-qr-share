@@ -7,6 +7,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-08-30
+
+### Added
+
+- **Test infrastructure** — vitest 2 + @testing-library/react, configured
+  for happy-dom. `pnpm test` runs 27 specs covering `config`,
+  `client/api` and `client/QrDialog`. `tsconfig.build.json` now
+  excludes `src/**/*.test.ts(x)` and `src/test/**` so the tests never
+  reach the published `.d.ts` output.
+- **Ambient CSS module declaration** — `src/client/styles.module.css.d.ts`
+  gives `tsc` the default-export shape that `lightningcss` produces at
+  build time, unblocking `import styles from './styles.module.css'`
+  in `QrButton.tsx` and `QrDialog.tsx` without weakening the type
+  checker.
+
+### Changed
+
+- **Dialog now renders into `document.body` via `createPortal`** —
+  the sidebar's `transform`/`filter` would otherwise trap
+  `position: fixed` inside the sidebar's box; portalling escapes every
+  ancestor's containing block so the backdrop covers the viewport and
+  the dialog is centered on screen.
+- **Dialog surface is theme-aware and fully opaque** — background
+  resolves to the DSH shell's `--dsw-alias-bg-layer-1` token (alpha = 1),
+  with a `currentColor 12%` hairline border and a soft shadow. A
+  `--dsh-qr-share-dialog-bg` override hook is exposed for power users.
+- **QR code canvas wrapped in a white card** — 8px padding + `#fff`
+  background guarantees the black modules stay scannable against
+  either light or dark DSH surface.
+- **Sidebar action is now a labeled icon** — wide mode renders both
+  the `HiOutlineQrCode` icon and the `button.label` text; rail mode
+  keeps the icon only.
+- **Copy localized** — `button.label` is now "分享" (zh) / "Share"
+  (en); `button.tooltip` and `dialog.title` were rewritten in the
+  same voice ("扫码把当前会话分享到手机" / "Scan to share"). The host
+  handshake's semantics are unchanged.
+
+### Fixed
+
+- **QR canvas was blank on first render** — the `useEffect` that
+  calls `qrcode.toCanvas` ran once before the portal-mounted `<canvas>`
+  was in the DOM. Adding `portalTarget` to the effect's dependency
+  list gives the canvas a second pass after the portal resolves.
+- **CSS Module class names were hardcoded** — `QrDialog.tsx` and
+  `QrButton.tsx` used the literal `'dsh-qr-share-backdrop'`
+  strings, but tsdown's `lightningcss` compiles them under the
+  `[hash]_[local]` pattern (`i2jIGq_backdrop`). The two forms never
+  matched, so the dialog had no styles at all and fell back to
+  `position: static`. Both files now consume the `styles.*` import
+  map; the bundle ships the hashed class names in the inline
+  `<style data-plugin>` tag.
+
 ## [0.1.0] — 2026-08-29
 
 ### Added
