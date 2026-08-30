@@ -65,3 +65,10 @@ coverage
 .idea/
 .DS_Store
 Thumbs.db
+
+# Vitest
+vitest.config.js.timestamp-*
+vitest.config.ts.timestamp-*
+
+# Test screenshots / fixtures kept locally
+tests/__screenshots__/

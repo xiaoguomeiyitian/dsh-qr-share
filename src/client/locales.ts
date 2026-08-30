@@ -16,9 +16,9 @@ export interface QrShareKey {
 }
 
 export const zh: QrShareKey = {
-  'button.label': '扫码登录',
-  'button.tooltip': '用手机扫码以同一账号登录',
-  'dialog.title': '用手机扫码登录',
+  'button.label': '分享',
+  'button.tooltip': '扫码把当前会话分享到手机',
+  'dialog.title': '扫码分享',
   'dialog.hint':
     '用手机相机扫描下方二维码。手机打开后会自动以当前账号登录，token 与浏览器 cookie 同寿命。',
   'dialog.urlLabel': '链接',
@@ -27,9 +27,9 @@ export const zh: QrShareKey = {
 }
 
 export const en: QrShareKey = {
-  'button.label': 'Mobile Login',
-  'button.tooltip': 'Scan with a phone to log in to this session',
-  'dialog.title': 'Scan to log in on mobile',
+  'button.label': 'Share',
+  'button.tooltip': 'Scan to share this session with your phone',
+  'dialog.title': 'Scan to share',
   'dialog.hint':
     'Scan the QR code below with your phone camera. The phone will log in to this session; the token lives as long as the browser cookie.',
   'dialog.urlLabel': 'URL',

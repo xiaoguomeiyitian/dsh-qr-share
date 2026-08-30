@@ -10,6 +10,7 @@ import type { ReactNode } from 'react'
 import { HiOutlineQrCode } from 'react-icons/hi2'
 import { QrDialog } from './QrDialog.tsx'
 import { LOCALE_NS } from './locales.ts'
+import styles from './styles.module.css'
 
 export interface QrButtonProps {
   /** Authoritative payload from the host half. */
@@ -25,14 +26,14 @@ export function QrButton({ info, wide, t }: QrButtonProps): ReactNode {
   return createElement(Fragment, null,
     createElement('button', {
       type: 'button',
-      className: 'dsh-qr-share-button',
+      className: styles.button,
       'aria-label': t('button.label'),
       title: t('button.tooltip'),
       onClick: () => { setOpen(true) },
     },
       createElement(HiOutlineQrCode, { size: wide ? 18 : 20 }),
       wide
-        ? createElement('span', { className: 'dsh-qr-share-button-label' }, t('button.label'))
+        ? createElement('span', { className: styles.buttonLabel }, t('button.label'))
         : null,
     ),
     open

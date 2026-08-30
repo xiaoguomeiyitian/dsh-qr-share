@@ -9,10 +9,19 @@
  * exchanges on path `/` (see browser-auth.ts). We enforce that here so a
  * future reverse-proxy sub-path does NOT silently produce a 401 on the
  * phone.
+ *
+ * Portal: the dialog is rendered into `document.body` via createPortal.
+ * The shell's sidebar uses transforms/filters on its ancestors, which
+ * would otherwise trap `position: fixed` inside the sidebar's box and
+ * make the dialog appear *inside* the sidebar column. Portaling escapes
+ * every ancestor's containing block so the backdrop covers the viewport
+ * and the dialog is centered on screen.
  */
 import { createElement, useEffect, useRef, useState, type MouseEvent, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import QRCode from 'qrcode'
 import { LOCALE_NS } from './locales.ts'
+import styles from './styles.module.css'
 
 export interface QrDialogProps {
   token: string
@@ -33,8 +42,23 @@ export function QrDialog({ token, tokenTtlMs, t, onClose }: QrDialogProps): Reac
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const [payload, setPayload] = useState<string>('')
   const [error, setError] = useState<string | null>(null)
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null)
+
+  // Resolve the portal target on mount. document.body exists in every
+  // browser env we ship to; the effect runs once.
+  useEffect(() => {
+    setPortalTarget(document.body)
+  }, [])
 
   useEffect(() => {
+    // Wait until the portal target resolves; the <canvas> only mounts into
+    // document.body *after* portalTarget flips. Without portalTarget in the
+    // dep list, the effect runs once with canvasRef.current === null (the
+    // portal-mounted canvas hasn't rendered yet) and never re-runs, so the
+    // canvas stays blank. portalTarget is set in an earlier effect on the
+    // same render, so listing it here triggers a second pass once the
+    // canvas is actually in the DOM.
+    if (portalTarget === null) return
     if (token === '') return
     const url = composeQrUrl(token)
     setPayload(url)
@@ -49,7 +73,7 @@ export function QrDialog({ token, tokenTtlMs, t, onClose }: QrDialogProps): Reac
         setError(reason instanceof Error ? reason.message : String(reason))
       })
     }
-  }, [token])
+  }, [token, portalTarget])
 
   // Silence unused-var: tokenTtlMs is part of the public surface; the
   // dialog could render a "expires in Nh" line in the future.
@@ -67,38 +91,45 @@ export function QrDialog({ token, tokenTtlMs, t, onClose }: QrDialogProps): Reac
     if (e.target === e.currentTarget) onClose()
   }
 
-  return createElement('div', {
-    className: 'dsh-qr-share-backdrop',
-    role: 'presentation',
-    onClick: onBackdropClick,
-  },
+  // Render nothing until the portal target resolves; this also keeps SSR
+  // safe if anyone ever turns the host half SSR.
+  if (portalTarget === null) return null
+
+  return createPortal(
     createElement('div', {
-      className: 'dsh-qr-share-dialog',
-      role: 'dialog',
-      'aria-modal': 'true',
-      'aria-labelledby': 'dsh-qr-share-title',
+      className: styles.backdrop,
+      role: 'presentation',
+      onClick: onBackdropClick,
     },
-      createElement('h2', { id: 'dsh-qr-share-title', className: 'dsh-qr-share-title' },
-        t('dialog.title')),
-      error !== null
-        ? createElement('p', { className: 'dsh-qr-share-err' }, `${t('dialog.error')}: ${error}`)
-        : createElement('canvas', {
-            ref: canvasRef,
-            className: 'dsh-qr-share-canvas',
-            width: 256,
-            height: 256,
-          }),
-      createElement('div', { className: 'dsh-qr-share-url-block' },
-        createElement('span', { className: 'dsh-qr-share-url-label' }, t('dialog.urlLabel')),
-        createElement('code', { className: 'dsh-qr-share-url' }, payload),
+      createElement('div', {
+        className: styles.dialog,
+        role: 'dialog',
+        'aria-modal': 'true',
+        'aria-labelledby': 'dsh-qr-share-title',
+      },
+        createElement('h2', { id: 'dsh-qr-share-title', className: styles.title },
+          t('dialog.title')),
+        error !== null
+          ? createElement('p', { className: styles.err }, `${t('dialog.error')}: ${error}`)
+          : createElement('canvas', {
+              ref: canvasRef,
+              className: styles.canvas,
+              width: 256,
+              height: 256,
+            }),
+        createElement('div', { className: styles.urlBlock },
+          createElement('span', { className: styles.urlLabel }, t('dialog.urlLabel')),
+          createElement('code', { className: styles.url }, payload),
+        ),
+        createElement('p', { className: styles.hint }, t('dialog.hint')),
+        createElement('button', {
+          type: 'button',
+          className: styles.close,
+          onClick: onClose,
+        }, t('dialog.close')),
       ),
-      createElement('p', { className: 'dsh-qr-share-hint' }, t('dialog.hint')),
-      createElement('button', {
-        type: 'button',
-        className: 'dsh-qr-share-close',
-        onClick: onClose,
-      }, t('dialog.close')),
     ),
+    portalTarget,
   )
 }
 

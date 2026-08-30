@@ -55,8 +55,28 @@
 }
 
 .dialog {
-  background: var(--dsh-qr-share-dialog-bg, #ffffff);
-  color: var(--dsh-qr-share-dialog-fg, #111111);
+  /* Theme-aware: inherit the shell's surface and text color instead of
+   * locking to white/black. The shell (DSH) drives the active theme via
+   * its own data attributes / class on <html> or <body>; we just need
+   * to let `currentColor` and `color-mix` flow through. A 1px hairline
+   * border keeps the dialog legible against either light or dark
+   * surfaces — the hard box-shadow we used to rely on looks wrong in
+   * dark mode. Power users can still override the two CSS variables
+   * (e.g. from a custom theme) to force specific colors. */
+  /* Fully opaque, theme-aware surface. We prefer the DSH shell's own
+   * elevated-surface tokens so the dialog blends in with the rest of
+   * the DSH chrome (tooltips, toasts, hovercards) in either light or
+   * dark mode:
+   *   1. --dsw-alias-bg-layer-1 — one elevation above the page base
+   *   2. --dsw-alias-bg-overlay — same family as DSH tooltips
+   *   3. --dsh-qr-share-dialog-bg — power-user override hook
+   * None of these are transparent, so the QR code, URL text and
+   * Close button always have a real panel behind them. The hardcoded
+   * hex fallback (#2c2c2e) is DSH's own dark-surface tone and only
+   * matters in envs that strip the shell variables. */
+  background: var(--dsh-qr-share-dialog-bg, var(--dsw-alias-bg-layer-1, var(--dsw-alias-bg-overlay, #2c2c2e)));
+  color: var(--dsh-qr-share-dialog-fg, currentColor);
+  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
   border-radius: 12px;
   padding: 24px;
   min-width: 320px;
@@ -69,13 +89,6 @@
   animation: dsh-qr-share-pop-in 160ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
 }
 
-@media (prefers-color-scheme: dark) {
-  .dialog {
-    background: var(--dsh-qr-share-dialog-bg, #1c1c1f);
-    color: var(--dsh-qr-share-dialog-fg, #f0f0f0);
-  }
-}
-
 .title {
   font-size: 16px;
   font-weight: 600;
@@ -86,6 +99,12 @@
   display: block;
   image-rendering: pixelated;
   border-radius: 8px;
+  /* When the dialog surface is transparent (i.e. following the DSH
+   * theme), the QR code still needs a solid background — otherwise the
+   * black modules vanish into a dark surface. 8px padding + white
+   * background gives the scanner reliable contrast in either theme. */
+  padding: 8px;
+  background: #ffffff;
 }
 
 .err {
