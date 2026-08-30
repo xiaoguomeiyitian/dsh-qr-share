@@ -65,9 +65,16 @@ npm config set registry https://registry.npmjs.org/
 ```bash
 cd /root/ai/dsh-qr-share
 rm -rf lib node_modules
-pnpm install                                       # 用 pnpm 装依赖（与 package-lock 风格一致）
-pnpm typecheck                                     # 0 错误才能继续
-pnpm build                                         # 产出 lib/index.js + lib/client.js + ...
+
+# 选项 A:npm(直接走,无需 corepack,本机镜像稳定)
+npm install
+npm run typecheck                                  # 0 错误才能继续
+npm run build                                      # 产出 lib/index.js + lib/client.js + ...
+
+# 选项 B:pnpm(也支持,本机若装好则用之;corepack 走 pnpm@11.24.0)
+pnpm install
+pnpm typecheck
+pnpm build
 ```
 
 确认 `lib/` 里至少有这五个文件：
@@ -146,9 +153,17 @@ cat node_modules/dsh-qr-share/package.json | head  # 字段应与本地一致
 # 1. 改 package.json 的 "version" 字段（如 0.1.0 → 0.1.1）
 # 2. 重建 + 模拟 + 正式发布
 cd /root/ai/dsh-qr-share
-pnpm typecheck && pnpm build
-npm publish --provenance --access public --registry=https://registry.npmjs.org/
-# 3. 在 GitHub 上打 tag
+# 走 npm 链路:
+npm run typecheck && npm run build
+# 或走 pnpm 链路:
+# pnpm typecheck && pnpm build
+
+# 也可以直接跑发版脚本(已统一 npm 链路,带 dry-run 预检):
+# ./npm_publish.sh
+
+# 3. 正式发布
+npm publish --access public --registry=https://registry.npmjs.org/
+# 4. 在 GitHub 上打 tag
 git tag v0.1.1 && git push origin v0.1.1
 ```
 

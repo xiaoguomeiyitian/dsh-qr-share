@@ -86,7 +86,8 @@
     "bundle": "tsdown",
     "watch": "tsdown --watch",
     "test": "vitest run",
-    "pack:tarball": "pnpm build && pnpm pack"
+    "pack:tarball": "npm run build && npm pack",
+    "release": "./npm_publish.sh"
   },
   "license": "MIT",
   "author": {

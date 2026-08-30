@@ -115,9 +115,11 @@ adopters") instead — let me know.
 
 ## Test plan
 
-- [x] `pnpm typecheck` — 0 errors
-- [x] `pnpm build` — 6 lib/*.js + 9 lib/types/*.d.ts
+- [x] `npm run typecheck` (or `pnpm typecheck`) — 0 errors
+- [x] `npm run build` (or `pnpm build`) — 6 lib/*.js + 9 lib/types/*.d.ts
 - [x] `npm pack --dry-run` — 31 files, 62.7 KB, sha 2b5a940564a16…
+- [x] `./npm_publish.sh` — published `dsh-qr-share@0.1.0` to
+      registry.npmjs.org successfully (sha 2e6b992e61a7…)
 - [x] Real DSH web profile (0.1.1-rc.2 + 0.1.2-alpha.1) — sidebar
       footer QR button appears after login; mobile scan + token
       exchange lands on `/`; trust fence + SameSite=Strict + HttpOnly

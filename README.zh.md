@@ -74,11 +74,20 @@ pnpm add dsh-qr-share
 ## 构建
 
 ```bash
+# 推荐:pnpm(与项目无 lockfile 的设计一致)
 pnpm install
 pnpm build       # tsc 声明 + tsdown bundle
 pnpm typecheck   # 严格检查
 pnpm pack        # 产出 dsh-qr-share-<version>.tgz
+
+# 也支持:npm(任意 Node >= 20, 无需额外安装)
+npm install
+npm run build    # 同样的 tsc + tsdown 管线
+npm run typecheck
+npm pack
 ```
+
+> 发版用 [`./npm_publish.sh`](npm_publish.sh)——单文件脚本,照搬 [core_ts](https://github.com/xiaoguomeiyitian/core_ts) 的发布流程(`npm login` → `npm install` → `npm run build` → `npm pack --dry-run` 预检 → `npm publish --access public`)。
 
 产物：
 

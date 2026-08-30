@@ -99,11 +99,23 @@ layout needs a symlink — see `manual` install below).
 ## Build
 
 ```bash
+# Recommended: pnpm (matches the project lockfile-less layout)
 pnpm install
 pnpm build       # tsc declarations + tsdown bundles
 pnpm typecheck   # strict check
 pnpm pack        # produce dsh-qr-share-<version>.tgz (used by the install commands above)
+
+# Also supported: npm (any Node >= 20, no extra install)
+npm install
+npm run build    # same tsc + tsdown pipeline
+npm run typecheck
+npm pack
 ```
+
+> For npm publishing we ship [`./npm_publish.sh`](npm_publish.sh) — a
+> single-file mirror of the [core_ts](https://github.com/xiaoguomeiyitian/core_ts)
+> release flow (`npm login` → `npm install` → `npm run build` →
+> `npm pack --dry-run` review → `npm publish --access public`).
 
 Outputs:
 
