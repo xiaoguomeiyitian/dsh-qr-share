@@ -53,18 +53,24 @@ echo
 # ─────────────────────────────────────────────────────────────────────────────
 # 2. 清理旧构建产物
 # ─────────────────────────────────────────────────────────────────────────────
-echo "▶ 2. 清理旧构建产物"
-rm -rf lib
+echo "▶ 2. 清理旧构建产物 + 旧 node_modules"
+echo "   (若 node_modules 是 pnpm 留下的硬链接结构, npm 11 arborist 会因"
+echo "    null link 在 Link.matches() 抛 'Cannot read properties of null')"
+rm -rf lib node_modules pnpm-lock.yaml package-lock.json
 mkdir -p lib
-echo "   ✓ lib/ 已清理"
+echo "   ✓ lib/ + node_modules + pnpm-lock.yaml + package-lock.json 已清理"
 echo
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 3. 装依赖 + 构建
 # ─────────────────────────────────────────────────────────────────────────────
 # 与 core_ts 一致: 用 npm(无 pnpm 路径), 本机镜像无 pnpm, 走 npm 链路最稳。
-echo "▶ 3. npm install"
-npm install
+echo "▶ 3. npm install (官方源, 干净装)"
+echo "   用户 ~/.npmrc 默认指向 registry.npmmirror.com"
+echo "   临时覆盖回官方源(只在本子进程生效, 不污染 ~/.npmrc)"
+ORIGINAL_REGISTRY="$(npm config get registry)"
+npm install --registry=https://registry.npmjs.org
+echo "   ✓ 已用官方源装完依赖(原 registry=${ORIGINAL_REGISTRY})"
 echo
 
 echo "▶ 4. npm run build (tsc declarations + tsdown bundles)"
