@@ -110,4 +110,28 @@ describe('QrDialog', () => {
     fireEvent.click(getByRole('button', { name: 'dialog.close' }))
     expect(onClose).toHaveBeenCalledTimes(1)
   })
+
+  it('renders a Copy button that writes the composed URL via the Clipboard API', async () => {
+    const writeText = vi.fn(() => Promise.resolve())
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    })
+    const { getByRole, findByText } = render(<QrDialog {...baseProps} />)
+    fireEvent.click(getByRole('button', { name: 'dialog.copy' }))
+    expect(writeText).toHaveBeenCalledWith(`${window.location.origin}/?token=tok-123`)
+    // Feedback flips to the localized "copied" label.
+    expect(await findByText('dialog.copied')).toBeInTheDocument()
+  })
+
+  it('shows the failure label when the copy path rejects', async () => {
+    const writeText = vi.fn(() => Promise.reject(new Error('denied')))
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    })
+    const { getByRole, findByText } = render(<QrDialog {...baseProps} />)
+    fireEvent.click(getByRole('button', { name: 'dialog.copy' }))
+    expect(await findByText('dialog.copyFailed')).toBeInTheDocument()
+  })
 })

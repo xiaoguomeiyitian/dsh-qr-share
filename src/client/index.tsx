@@ -14,7 +14,7 @@ import { Fragment, createElement, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { QrButton } from './QrButton.tsx'
 import { fetchShareInfo, type ShareInfo } from './api.ts'
-import { LOCALE_NS, zh, en } from './locales.ts'
+import { LOCALE_NS, zh, en, extraDicts } from './locales.ts'
 
 // Ambient module augmentations — the host runtime supplies the real
 // service shapes via type-only declarations in its `@deepseek-ai/*`
@@ -23,6 +23,7 @@ declare module '@deepseek-ai/cordis' {
   interface Context {
     locale: {
       register(ns: string, dict: { zh: unknown; en: unknown }): () => void
+      register(ns: string, locale: string, dict: unknown): () => void
       bind(ns: string): (k: string) => string
     }
     slots: {
@@ -89,7 +90,18 @@ function FooterAction(
 export function apply(ctx: import('@deepseek-ai/cordis').Context): void {
   // Locale registration is a side-effect on the locale service; the slot
   // rendering reads through the bound `t` thunk the apply captures here.
-  ctx.effect(() => ctx.locale.register(LOCALE_NS, { zh, en }), 'qr-share: dictionaries')
+  // Built-in locales use the one-call form; extra dictionaries register
+  // individually via the single-locale overload. All disposers run in one
+  // effect so HMR / fiber teardown removes every dictionary together.
+  ctx.effect(() => {
+    const disposers = [
+      ctx.locale.register(LOCALE_NS, { zh, en }),
+      ...Object.entries(extraDicts).map(([locale, dict]) =>
+        ctx.locale.register(LOCALE_NS, locale, dict),
+      ),
+    ]
+    return () => { for (const dispose of disposers) dispose() }
+  }, 'qr-share: dictionaries')
   const t = ctx.locale.bind(LOCALE_NS) as (k: keyof typeof zh) => string
 
   ctx.slots.inject('sidebar.footer.action', () =>

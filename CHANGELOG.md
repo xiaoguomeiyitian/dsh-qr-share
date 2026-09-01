@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-08-30
+
+### Added
+
+- **Copy link button in the dialog** — a second footer action next to
+  Close. Clicking it copies `${window.location.origin}/?token=…` to
+  the clipboard; the label flips to a localized "已复制 / Copied"
+  confirmation for 1.5 s, then back. Falls back from the async
+  Clipboard API to `document.execCommand('copy')` when the secure-
+  context path is unavailable (older WebViews, non-HTTPS previews),
+  and surfaces "复制失败 / Copy failed" if both paths reject.
+- **Extra locale dictionaries** — beyond the built-in `zh` and `en`,
+  six more locales are registered via the single-locale
+  `ctx.locale.register(ns, locale, dict)` overload: `zh-Hant` (繁體),
+  `ja`, `ko`, `fr`, `de`, `ru`. They activate only when a matching
+  language-pack plugin sets the DSH preference; without a language
+  pack, the existing fallback chain (`zh` → `en`) still resolves.
+- **Dialog keys for the copy flow** — `dialog.copy`, `dialog.copied`,
+  and `dialog.copyFailed` added to the `QrShareKey` interface and
+  every dictionary.
+- **Two QrDialog tests** — clipboard write is asserted with a
+  stubbed `navigator.clipboard.writeText` (success + reject path).
+
+### Changed
+
+- **Footer action row** in `QrDialog` now holds two buttons
+  ("Copy link" + "Close") in a flex row (`.actions`) instead of a
+  single Close button. The `.close` class is generalized to `.action`;
+  the dialog's visual rhythm is unchanged.
+
 ## [0.2.0] — 2026-08-30
 
 ### Added
@@ -102,5 +132,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   preventing cross-site frames from reaching the route and stopping
   intermediary caches from storing the token.
 
-[Unreleased]: https://github.com/xiaoguomeiyitian/dsh-qr-share/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/xiaoguomeiyitian/dsh-qr-share/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/xiaoguomeiyitian/dsh-qr-share/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/xiaoguomeiyitian/dsh-qr-share/releases/tag/v0.1.0

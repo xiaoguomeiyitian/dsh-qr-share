@@ -146,8 +146,13 @@
   margin: 0;
 }
 
-.close {
+.actions {
+  display: flex;
+  gap: 8px;
   margin-top: 4px;
+}
+
+.action {
   padding: 8px 16px;
   border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
   background: transparent;
@@ -157,11 +162,11 @@
   cursor: pointer;
 }
 
-.close:hover {
+.action:hover {
   background: color-mix(in srgb, currentColor 8%, transparent);
 }
 
-.close:focus-visible {
+.action:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: -2px;
 }

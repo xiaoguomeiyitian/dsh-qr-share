@@ -38,6 +38,35 @@ function composeQrUrl(token: string): string {
   return url.toString()
 }
 
+/**
+ * Write text to the clipboard. Prefers the async Clipboard API; falls
+ * back to the legacy execCommand path for older WebViews / non-secure
+ * contexts where navigator.clipboard is absent.
+ */
+async function copyTextToClipboard(text: string): Promise<boolean> {
+  if (typeof navigator !== 'undefined' && navigator.clipboard !== undefined) {
+    try {
+      await navigator.clipboard.writeText(text)
+      return true
+    } catch {
+      // Fall through to the legacy path — e.g. permission policy denial.
+    }
+  }
+  try {
+    const area = document.createElement('textarea')
+    area.value = text
+    area.style.position = 'fixed'
+    area.style.opacity = '0'
+    document.body.appendChild(area)
+    area.select()
+    const ok = document.execCommand('copy')
+    document.body.removeChild(area)
+    return ok
+  } catch {
+    return false
+  }
+}
+
 export function QrDialog({ token, tokenTtlMs, t, onClose }: QrDialogProps): ReactNode {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const [payload, setPayload] = useState<string>('')
@@ -78,6 +107,19 @@ export function QrDialog({ token, tokenTtlMs, t, onClose }: QrDialogProps): Reac
   // Silence unused-var: tokenTtlMs is part of the public surface; the
   // dialog could render a "expires in Nh" line in the future.
   void tokenTtlMs
+
+  // Copy feedback: idle → copied|copyFailed for a short window, then back.
+  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle')
+  useEffect(() => {
+    if (copyState === 'idle') return
+    const timer = setTimeout(() => { setCopyState('idle') }, 1500)
+    return () => { clearTimeout(timer) }
+  }, [copyState])
+
+  const onCopy = (): void => {
+    const url = payload !== '' ? payload : composeQrUrl(token)
+    void copyTextToClipboard(url).then((ok) => { setCopyState(ok ? 'copied' : 'failed') })
+  }
 
   // Escape + backdrop dismiss. The dialog is rendered above the sidebar
   // (fixed position) so the user expects the same UX as other DSH modals.
@@ -122,11 +164,22 @@ export function QrDialog({ token, tokenTtlMs, t, onClose }: QrDialogProps): Reac
           createElement('code', { className: styles.url }, payload),
         ),
         createElement('p', { className: styles.hint }, t('dialog.hint')),
-        createElement('button', {
-          type: 'button',
-          className: styles.close,
-          onClick: onClose,
-        }, t('dialog.close')),
+        createElement('div', { className: styles.actions },
+          createElement('button', {
+            type: 'button',
+            className: styles.action,
+            onClick: onCopy,
+          }, copyState === 'copied'
+            ? t('dialog.copied')
+            : copyState === 'failed'
+              ? t('dialog.copyFailed')
+              : t('dialog.copy')),
+          createElement('button', {
+            type: 'button',
+            className: styles.action,
+            onClick: onClose,
+          }, t('dialog.close')),
+        ),
       ),
     ),
     portalTarget,
