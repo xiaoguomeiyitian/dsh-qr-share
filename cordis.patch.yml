@@ -14,9 +14,11 @@
 # modules resolves `<name>/package.json` from the profile dir to
 # discover the client half and compose window.__DSH_BOOT__.
 #
-# To disable the plugin without uninstalling, swap this row's `name`
-# to a `!!js` expression returning a disabled placeholder (see
-# dsh-better-sidebar's cordis.patch.yml for the pattern).
+# `id` MUST match the bundle's own `window.__ModuleLoader__.load({id,
+# …})` argument (set by `tsdown.config.ts#clientBundle(pluginId)`.).
+# An id mismatch breaks dsh-client-modules' module graph: the loader
+# entry path and the bundle's required id diverge, so the browser
+# never resolves the plugin and shows nothing on screen.
 - insert:
-    - id: qr-share
+    - id: dsh-qr-share
       name: 'dsh-qr-share'
