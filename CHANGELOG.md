@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] — 2026-09-01
+
+### Changed
+
+- **Trimmed `dsh.client.inject` peer-module list** — dropped
+  `@deepseek-ai/dsh-client-runtime` and `@deepseek-ai/dsh-client-ui-slots`
+  from the package.json manifest. The plugin's runtime only consumes
+  three services from the dsh host (`slots`, `locale`, `connection`),
+  and these are still provided by the remaining two peer modules
+  (`@deepseek-ai/dsh-client-locale` and
+  `@deepseek-ai/dsh-client-ui-sidebar`). Boot-time module manifest
+  shrinks and `__DSH_BOOT__.clientModules` reflects the smaller
+  surface; user-visible behavior (sidebar footer button, QR dialog,
+  copy-link, six extra locales) is unchanged.
+
 ## [0.3.0] — 2026-08-30
 
 ### Added
