@@ -1,6 +1,6 @@
 {
   "name": "dsh-qr-share",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "DSH web plugin: a sidebar footer QR-code button that lets a phone scan and re-issue the current browser's authenticated launch URL, reusing the same ?token exchange the desktop just completed.",
   "type": "module",
   "repository": {

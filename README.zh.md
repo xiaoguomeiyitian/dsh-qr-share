@@ -17,6 +17,7 @@ DSH 运行起来后，扫码登录很烦——你用手机拍屏幕上的 `127.0
 1. 登录后，QR 码图标出现在侧边栏底部（设置按钮旁）。
 2. 点击 → 弹窗显示 QR 码 + URL 明文（扫码失败时手动复制）。
 3. 手机扫码 → 浏览器打开 URL → 服务端 `BrowserAuth` 拿 token 换 cookie（303 → `/）→ 手机落到同一会话。
+4. 每次打开弹窗都会重新向 Host 拉取 token（打开期间每 15 秒续拉一次），QR 码始终编码**当前** `dsh web` 激活的 token——Host 重启但页面没有整体刷新时，不会留下一个已失效的旧 token。
 
 QR 内容用 `window.location.origin` 拼接，所以**自动跟随**桌面实际使用的 host（局域网 IP、公网域名、反向代理子路径）——**不需要任何环境变量**告诉它指向哪个 host。`web-external.patch.yml` 里那个 `DSH_PUBLIC_HOST` 只负责打开 `/_qr/share` 路由的信任围栏，不参与 URL 拼接。
 

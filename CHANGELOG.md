@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.2] — 2026-10-19
+
+### Fixed
+
+- **Stale QR token across Host restarts** — the launch token was fetched
+  once at mount (plus on window focus) and then cached in the sidebar
+  component, so a `dsh web` restart that did not reload the page left
+  the dialog encoding the previous activation's token; a phone scan
+  then failed `BrowserAuth`'s token exchange while cookie-holding
+  devices kept working. The dialog now re-fetches `/_qr/share` on every
+  open and every 15 s while open, falling back to the last probed
+  payload only while the re-fetch has not landed.
+
 ## [0.3.1] — 2026-09-01
 
 ### Changed

@@ -29,6 +29,10 @@ English | [中文](README.zh.md)
 3. Scan with a phone → the phone opens the URL → the server's
    `BrowserAuth` exchanges the token for a cookie (303 → `/`) and the
    phone lands on the same session.
+4. The token is re-fetched from the host every time the dialog opens
+   (and every 15 s while it stays open), so the QR always encodes the
+   **current** `dsh web` activation's token — a Host restart that does
+   not reload the page cannot leave a dead token behind.
 
 The QR URL is composed from `window.location.origin` so it automatically
 matches whatever authority the desktop actually used (LAN IP, public
