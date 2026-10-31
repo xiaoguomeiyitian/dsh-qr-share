@@ -117,5 +117,5 @@ echo
 echo "📝 发布后建议:"
 echo "   1. git tag v${VERSION} && git push origin v${VERSION}"
 echo "   2. 在 GitHub 创建 Release:  https://github.com/xiaoguomeiyitian/${NAME}/releases/new"
-echo "   3. 提交 dsh.so:           https://www.dsh.so/submit/"
+echo "   3. 提交 dsh.so:           https://www.dsh.so/submit/  （模板见 SUBMISSION-DSH-SO.md）"
 echo "   4. 更新 CHANGELOG.md (加 'Discovered: dsh.so' 行)"

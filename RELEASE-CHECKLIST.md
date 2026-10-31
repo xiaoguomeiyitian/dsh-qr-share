@@ -173,3 +173,15 @@ git tag v0.1.1 && git push origin v0.1.1
 
 更复杂的范例（含 GitHub Actions + Trusted Publishing + 双协议 e2e 守护）见
 `DSH-better-sidebar/AGENTS.md` §4。本插件暂用本机手动发布——简单、可见、可控。
+
+---
+
+## 发布后的发现渠道提交
+
+发完 npm 后还有几个**需要手动点一下**的发现渠道，对应文案与清单都在本仓：
+
+| 渠道 | 文档 |
+|---|---|
+| dsh.so 插件市场 | `SUBMISSION-DSH-SO.md`（提交文案，可直接复制） |
+| dsh.so + GitHub Release 等全流程 | `SUBMISSION.md`（发现渠道提交清单） |
+| DSH-better-sidebar §15 真实接入案例 | `SUBMISSION-BETTER-SIDEBAR.md`（英文 PR 文案） |
