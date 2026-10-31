@@ -1,8 +1,9 @@
 #!/bin/bash
 
 # npm_publish.sh — 发布 dsh-qr-share 到 npm
-# 借鉴 /root/core_ts/npm_publish.sh 的简洁风格:
-#   npm login → rm build → build → npm publish --access public
+# 流程（脚本内分段 0–6，与下面各段横幅一一对应）：
+#   0. 前置检查 → 1. npm login → 2. 清理旧产物 → 3. npm install
+#   → 4. npm run build → 5. npm pack --dry-run 预览 → 6. npm publish
 #
 # 用法:
 #   ./npm_publish.sh
@@ -64,7 +65,7 @@ echo
 # ─────────────────────────────────────────────────────────────────────────────
 # 3. 装依赖 + 构建
 # ─────────────────────────────────────────────────────────────────────────────
-# 与 core_ts 一致: 用 npm(无 pnpm 路径), 本机镜像无 pnpm, 走 npm 链路最稳。
+# 用 npm 而不是 pnpm: 本机镜像无 pnpm, 走 npm 链路最稳。
 echo "▶ 3. npm install (官方源, 干净装)"
 echo "   用户 ~/.npmrc 默认指向 registry.npmmirror.com"
 echo "   临时覆盖回官方源(只在本子进程生效, 不污染 ~/.npmrc)"
@@ -73,6 +74,9 @@ npm install --registry=https://registry.npmjs.org
 echo "   ✓ 已用官方源装完依赖(原 registry=${ORIGINAL_REGISTRY})"
 echo
 
+# ─────────────────────────────────────────────────────────────────────────────
+# 4. 构建
+# ─────────────────────────────────────────────────────────────────────────────
 echo "▶ 4. npm run build (tsc declarations + tsdown bundles)"
 npm run build
 echo
